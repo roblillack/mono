@@ -15,6 +15,10 @@
 
 #include "misc-private.h"
 
+#ifdef PLATFORM_QNX
+#include <time.h>
+#endif
+
 void _wapi_calc_timeout(struct timespec *timeout, guint32 ms)
 {
 	struct timeval now;

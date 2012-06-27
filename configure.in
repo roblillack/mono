@@ -313,6 +313,41 @@ case "$host" in
 		libgc_threads=pthreads
 		use_sigposix=yes
 		;;
+        *-*-qnx*)
+                CPPFLAGS="$CPPFLAGS -DPLATFORM_QNX -D_QNX_SOURCE -D_REENTRANT -DUSE_MMAP"
+		# semget, semctl, semop missing
+                CPPFLAGS="$CPPFLAGS -DDISABLE_SHARED_HANDLES"
+
+		with_sigaltstack=no
+		use_sigposix=yes
+		with_tls=pthread
+		AC_DEFINE(PTHREAD_POINTER_ID)
+
+		libdl="-ldl"
+
+		with_static_mono=yes
+		need_link_unlink=yes
+
+		# disable GC for now ... :(
+                with_gc=none
+                gc_default=none
+                with_sgen=no
+
+		# working on this ...
+		#libgc_threads=pthreads
+		#gc_default=boehm
+                #with_gc=sgen
+                #gc_default=sgen
+		#with_sgen=yes
+
+		# isinf(3) requires -lm; see isinf check below
+		LDFLAGS="$LDFLAGS -lm"
+
+		# to bypass the underscore linker check, can't work when cross-compiling
+		mono_cv_uscore=yes
+		mono_cv_clang=no
+		;;
+                
 	*)
 		AC_MSG_WARN([*** Please add $host to configure.in checks!])
 		host_win32=no
@@ -947,6 +982,7 @@ case "x$gc" in
 		AC_MSG_WARN("Compiling mono without GC.")
 		AC_DEFINE_UNQUOTED(DEFAULT_GC_NAME, "none", [GC description])
 		AC_DEFINE(HAVE_NULL_GC,1,[No GC support.])
+                gc_msg="GC disabled"
 		;;
 	*)
 		AC_MSG_ERROR([Invalid argument to --with-gc.])

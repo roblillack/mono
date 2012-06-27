@@ -910,7 +910,7 @@ mono_arch_find_jit_info (MonoDomain *domain, MonoJitTlsData *jit_tls,
 void
 mono_arch_sigctx_to_monoctx (void *sigctx, MonoContext *mctx)
 {
-#if defined (__native_client__)
+#if defined (__native_client__) || defined (PLATFORM_QNX)
 	printf("WARNING: mono_arch_sigctx_to_monoctx() called!\n");
 	mctx->eax = 0xDEADBEEF;
 	mctx->ebx = 0xDEADBEEF;
@@ -953,7 +953,7 @@ mono_arch_sigctx_to_monoctx (void *sigctx, MonoContext *mctx)
 void
 mono_arch_monoctx_to_sigctx (MonoContext *mctx, void *sigctx)
 {
-#if defined(__native_client__)
+#if defined(__native_client__) || defined(PLATFORM_QNX)
 	printf("WARNING: mono_arch_monoctx_to_sigctx() called!\n");
 #else
 #ifdef MONO_ARCH_USE_SIGACTION
@@ -987,7 +987,7 @@ mono_arch_monoctx_to_sigctx (MonoContext *mctx, void *sigctx)
 gpointer
 mono_arch_ip_from_context (void *sigctx)
 {
-#if defined(__native_client__)
+#if defined(__native_client__) || defined(PLATFORM_QNX)
 	printf("WARNING: mono_arch_ip_from_context() called!\n");
 	return (NULL);
 #else

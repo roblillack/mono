@@ -45,6 +45,10 @@
 #include <mach-o/dyld.h>
 #endif
 
+#ifdef PLATFORM_QNX
+extern int getpid(void);
+#endif
+
 /* AssemblyVersionMap: an assembly name and the assembly version set on which it is based */
 typedef struct  {
 	const char* assembly_name;

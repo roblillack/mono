@@ -40,6 +40,10 @@
 #include <mono/metadata/gc-internal.h>
 #include "attach.h"
 
+#ifdef PLATFORM_QNX
+extern int getpid(void);
+#endif
+
 /*
  * This module enables other processes to attach to a running mono process and
  * load agent assemblies. 
