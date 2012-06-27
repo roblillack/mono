@@ -1926,7 +1926,11 @@ static GSList *load_modules (FILE *fp)
 			continue;
 		}
 
+#ifdef PLATFORM_QNX
+		device = makedev (0, (int)maj_dev, (int)min_dev);
+#else
 		device = makedev ((int)maj_dev, (int)min_dev);
+#endif
 		if ((device == 0) &&
 		    (inode == 0)) {
 			continue;
