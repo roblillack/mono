@@ -907,7 +907,7 @@ mono_arch_monoctx_to_sigctx (MonoContext *mctx, void *sigctx)
 gpointer
 mono_arch_ip_from_context (void *sigctx)
 {
-#if defined(__native_client__)
+#if defined(__native_client__) || defined(PLATFORM_QNX)
 	printf("WARNING: mono_arch_ip_from_context() called!\n");
 	return (NULL);
 #else
