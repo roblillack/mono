@@ -25,6 +25,10 @@
 #include "mono/arch/arm/arm-fpa-codegen.h"
 #include "mono/arch/arm/arm-vfp-codegen.h"
 
+#ifdef PLATFORM_QNX
+#include <sys/mman.h>
+#endif
+
 #if defined(__ARM_EABI__) && defined(__linux__) && !defined(PLATFORM_ANDROID)
 #define HAVE_AEABI_READ_TP 1
 #endif
@@ -895,6 +899,8 @@ mono_arch_flush_icache (guint8 *code, gint size)
 	sys_icache_invalidate (code, size);
 #elif __GNUC_PREREQ(4, 1)
 	__clear_cache (code, code + size);
+#elif defined(PLATFORM_QNX)
+        msync(code, size, MS_INVALIDATE_ICACHE);
 #elif defined(PLATFORM_ANDROID)
 	const int syscall = 0xf0002;
 	__asm __volatile (

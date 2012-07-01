@@ -2507,6 +2507,15 @@ case "$host" in
 		sgen_supported=true
 		AOT_SUPPORTED="yes"
 		;;
+	arm*-qnx*)
+		TARGET=ARM;
+		arch_target=arm;
+		ACCESS_UNALIGNED="no"
+		JIT_SUPPORTED=yes
+		CPPFLAGS="$CPPFLAGS -DARM_FPU_VFP=1 -D__ARM_EABI__ -DHAVE_ARMV6=1"
+		jit_wanted=true
+		sgen_supported=true
+		;;
 	s390-*-linux*)
 		TARGET=S390;
 		arch_target=s390;
