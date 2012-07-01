@@ -484,7 +484,7 @@ mono_arch_sigctx_to_monoctx (void *sigctx, MonoContext *mctx)
 {
 #ifdef MONO_CROSS_COMPILE
 	g_assert_not_reached ();
-#elif BROKEN_LINUX
+#elif defined(BROKEN_LINUX) || defined(PLATFORM_QNX)
 	g_assert_not_reached ();
 #else
 	arm_ucontext *my_uc = sigctx;
@@ -500,7 +500,7 @@ mono_arch_monoctx_to_sigctx (MonoContext *mctx, void *ctx)
 {
 #ifdef MONO_CROSS_COMPILE
 	g_assert_not_reached ();
-#elif BROKEN_LINUX
+#elif defined(BROKEN_LINUX)
 	g_assert_not_reached ();
 #else
 	arm_ucontext *my_uc = ctx;
