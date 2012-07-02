@@ -317,6 +317,8 @@ case "$host" in
                 CPPFLAGS="$CPPFLAGS -DPLATFORM_QNX -D_QNX_SOURCE -D_REENTRANT -DUSE_MMAP"
 		# semget, semctl, semop missing
                 CPPFLAGS="$CPPFLAGS -DDISABLE_SHARED_HANDLES"
+		# SA_RESTART is not supported on QNX. This is probably hazardous ...
+                CPPFLAGS="$CPPFLAGS -DSA_RESTART=0"
 
 		with_sigaltstack=no
 		use_sigposix=yes
@@ -328,17 +330,13 @@ case "$host" in
 		with_static_mono=yes
 		need_link_unlink=yes
 
-		# disable GC for now ... :(
-                with_gc=none
-                gc_default=none
-                with_sgen=no
+		# parallel mark still needs some inline function in libgc/include/private/gc_locks.h
+		# defined .... later maybe
+                parallel_mark=no
+		libgc_threads=pthreads
 
-		# working on this ...
-		#libgc_threads=pthreads
-		#gc_default=boehm
-                #with_gc=sgen
-                #gc_default=sgen
-		#with_sgen=yes
+		# we'll build with sgen, but right now it CRASHES when collecting ...
+                with_sgen=yes
 
 		# isinf(3) requires -lm; see isinf check below
 		LDFLAGS="$LDFLAGS -lm"
@@ -2249,7 +2247,7 @@ case "$host" in
 			sgen_supported=true
 			AOT_SUPPORTED="yes"
 			;;
-		  darwin*|openbsd*|freebsd*)
+		  darwin*|openbsd*|freebsd*|nto-qnx*)
 			sgen_supported=true
 		        ;;
 		esac
