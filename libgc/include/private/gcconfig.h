@@ -64,6 +64,16 @@
 #   define DARWIN
 # endif
 
+/* And one for QNX: */
+# if defined(__QNX__) && !defined(QNX)
+#    define QNX
+#    define OS_TYPE "QNX"
+     extern char etext[];
+#    define DATASTART ((ptr_t)(etext))
+     extern int _end[];
+#    define DATAEND (_end)
+# endif
+
 /* Determine the machine type: */
 # if defined(__native_client__)
 #    define NACL
@@ -72,7 +82,7 @@
 # endif
 # if defined(__arm__) || defined(__thumb__)
 #    define ARM32
-#    if !defined(LINUX) && !defined(NETBSD) && !defined(DARWIN)
+#    if !defined(LINUX) && !defined(NETBSD) && !defined(DARWIN) && !defined(QNX)
 #      define NOSYS
 #      define mach_type_known
 #    endif
@@ -109,6 +119,10 @@
 # endif
 # if defined(NETBSD) && defined(__sh__)
 #    define SH
+#    define mach_type_known
+# endif
+# if defined(QNX) && (defined(__arm32__) || defined(__arm__))
+#    define ARM32
 #    define mach_type_known
 # endif
 # if defined(vax)
@@ -364,6 +378,10 @@
 # if defined(__OpenBSD__) && (defined(i386) || defined(__i386__))
 #   define I386
 #   define OPENBSD
+#   define mach_type_known
+# endif
+# if defined(QNX) && (defined(i386) || defined(__i386__))
+#   define I386
 #   define mach_type_known
 # endif
 # if defined(FREEBSD) && (defined(i386) || defined(__i386__))
