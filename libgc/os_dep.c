@@ -773,6 +773,42 @@ ptr_t GC_get_stack_base(){
 }
 # endif /* BEOS */
 
+# ifdef QNX
+# include <errno.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <stdint.h>
+# include <sys/debug.h>
+# include <sys/procfs.h>
+
+ptr_t GC_get_stack_base() {
+    static ptr_t _base = 0;
+    static pthread_t _thread;
+    pthread_t thread = pthread_self();
+
+    if (_base == 0 || thread != _thread) {
+        struct _debug_thread_info thread_info;
+        memset(&thread_info, 0, sizeof(thread_info));
+        thread_info.tid = thread;
+
+        int fd = open("/proc/self", O_RDONLY);
+        if (fd == -1) {
+            ABORT("Unable to open /proc/self");
+            return 0;
+        }
+        devctl(fd, DCMD_PROC_TIDSTATUS, &thread_info, sizeof(thread_info), 0);
+        close(fd);
+
+        _base = (ptr_t) ((uintptr_t) thread_info.stkbase + thread_info.stksize);
+        _thread = thread;
+    }
+
+    return _base;
+}
+
+
+# endif /* QNX */
+
 
 # ifdef OS2
 
@@ -1124,7 +1160,7 @@ void *GC_set_stackbottom = NULL;
 
 #if !defined(BEOS) && !defined(AMIGA) && !defined(MSWIN32) \
     && !defined(MSWINCE) && !defined(OS2) && !defined(NOSYS) && !defined(ECOS) \
-    && !defined(GC_OPENBSD_THREADS)
+    && !defined(GC_OPENBSD_THREADS) && !defined(QNX)
 
 ptr_t GC_get_stack_base()
 {

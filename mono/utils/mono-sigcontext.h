@@ -16,7 +16,7 @@
 
 #if defined(TARGET_X86)
 
-#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__DragonFly__) || defined(PLATFORM_QNX)
+#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__DragonFly__) || defined(__QNX__)
 #include <ucontext.h>
 #endif
 #if defined(__APPLE__)
@@ -85,6 +85,16 @@
 	#define UCONTEXT_REG_ESI(ctx) (((ucontext_t*)(ctx))->uc_mcontext.gregs [ESI])
 	#define UCONTEXT_REG_EDI(ctx) (((ucontext_t*)(ctx))->uc_mcontext.gregs [EDI])
 	#define UCONTEXT_REG_EIP(ctx) (((ucontext_t*)(ctx))->uc_mcontext.gregs [EIP])
+#elif defined(__QNX__)
+        #define UCONTEXT_REG_EAX(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.eax)
+	#define UCONTEXT_REG_EBX(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.ebx)
+	#define UCONTEXT_REG_ECX(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.ecx)
+	#define UCONTEXT_REG_EDX(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.edx)
+	#define UCONTEXT_REG_EBP(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.ebp)
+	#define UCONTEXT_REG_ESP(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.esp)
+	#define UCONTEXT_REG_ESI(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.esi)
+	#define UCONTEXT_REG_EDI(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.edi)
+	#define UCONTEXT_REG_EIP(ctx) (((ucontext_t*)(ctx))->uc_mcontext.cpu.eip)
 #else
 
 #if defined(TARGET_ANDROID)
@@ -354,25 +364,26 @@ typedef struct ucontext {
 	#define UCONTEXT_REG_R11(ctx) (((arm_ucontext*)(ctx))->sig_ctx.arm_fp)
 	#define UCONTEXT_REG_R12(ctx) (((arm_ucontext*)(ctx))->sig_ctx.arm_ip)
 	#define UCONTEXT_REG_CPSR(ctx) (((arm_ucontext*)(ctx))->sig_ctx.arm_cpsr)
-#elif defined(PLATFORM_QNX)
-    typedef ARM_CPU_REGISTERS arm_ucontext;
-    #define UCONTEXT_REG_PC(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_PC])
-    #define UCONTEXT_REG_SP(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_SP])
-    #define UCONTEXT_REG_LR(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_LR])
-    #define UCONTEXT_REG_R0(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R0])
-    #define UCONTEXT_REG_R1(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R1])
-    #define UCONTEXT_REG_R2(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R2])
-    #define UCONTEXT_REG_R3(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R3])
-    #define UCONTEXT_REG_R4(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R4])
-    #define UCONTEXT_REG_R5(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R5])
-    #define UCONTEXT_REG_R6(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R6])
-    #define UCONTEXT_REG_R7(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R7])
-    #define UCONTEXT_REG_R8(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R8])
-    #define UCONTEXT_REG_R9(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R9])
-    #define UCONTEXT_REG_R10(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R10])
-    #define UCONTEXT_REG_R11(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R11])
-    #define UCONTEXT_REG_R12(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R12])
-    #define UCONTEXT_REG_CPSR(ctx) (((ARM_CPU_REGISTERS*)(ctx))->spsr)
+#elif defined(__QNX__)
+	#include <ucontext.h>
+	typedef ARM_CPU_REGISTERS arm_ucontext;
+	#define UCONTEXT_REG_PC(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_PC])
+	#define UCONTEXT_REG_SP(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_SP])
+	#define UCONTEXT_REG_LR(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_LR])
+	#define UCONTEXT_REG_R0(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R0])
+	#define UCONTEXT_REG_R1(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R1])
+	#define UCONTEXT_REG_R2(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R2])
+	#define UCONTEXT_REG_R3(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R3])
+	#define UCONTEXT_REG_R4(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R4])
+	#define UCONTEXT_REG_R5(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R5])
+	#define UCONTEXT_REG_R6(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R6])
+	#define UCONTEXT_REG_R7(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R7])
+	#define UCONTEXT_REG_R8(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R8])
+	#define UCONTEXT_REG_R9(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R9])
+	#define UCONTEXT_REG_R10(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R10])
+	#define UCONTEXT_REG_R11(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R11])
+	#define UCONTEXT_REG_R12(ctx) (((ARM_CPU_REGISTERS*)(ctx))->gpr[ARM_REG_R12])
+	#define UCONTEXT_REG_CPSR(ctx) (((ARM_CPU_REGISTERS*)(ctx))->spsr)
 #endif
 #elif defined(__mips__)
 
