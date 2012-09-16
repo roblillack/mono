@@ -39,3 +39,7 @@
 *~
 *.suo
 *.csproj.user
+/mcs/class/System.Data/y.output
+/mono.h
+/mono/mini/cpu-arm.h
+/mono/utils/mono-dtrace.h
