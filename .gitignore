@@ -113,9 +113,12 @@ GTAGS
 ##############################################################################
 
 compile
-mono.h
 mono-*.tar.*
 mono.spec
 mono-core.spec
 tmpinst-dir.stamp
 
+/mcs/class/System.Data/y.output
+/mono.h
+/mono/mini/cpu-arm.h
+/mono/utils/mono-dtrace.h
