@@ -725,6 +725,11 @@ mono_arch_cpu_optimizations (guint32 *exclude_mask)
 	v5_supported = TRUE;
 	darwin = TRUE;
 	iphone_abi = TRUE;
+#elif PLATFORM_QNX
+        thumb_supported = TRUE;
+        v5_supported = TRUE;
+        v6_supported = TRUE;
+        v7_supported = TRUE;
 #else
 	char buf [512];
 	char *line;
