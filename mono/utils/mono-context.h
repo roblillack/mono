@@ -29,7 +29,7 @@
 
 /*HACK, move this to an eventual mono-signal.c*/
 #if defined( __linux__) || defined(__sun) || defined(__APPLE__) || defined(__NetBSD__) || \
-       defined(__FreeBSD__) || defined(__OpenBSD__)
+       defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__QNX__)
 #define MONO_SIGNAL_USE_SIGACTION
 #endif
 
@@ -72,6 +72,16 @@ struct sigcontext {
 # define SC_ESP regs.esp
 # define SC_EDI regs._reserved_2[0]
 # define SC_ESI regs._reserved_2[1]
+#elif defined(__QNX__)
+# define SC_EAX cpu.eax
+# define SC_EBX cpu.ebx
+# define SC_ECX cpu.ecx
+# define SC_EDX cpu.edx
+# define SC_EBP cpu.ebp
+# define SC_EIP cpu.eip
+# define SC_ESP cpu.esp
+# define SC_EDI cpu.edi
+# define SC_ESI cpu.esi
 #else
 # define SC_EAX eax
 # define SC_EBX ebx
