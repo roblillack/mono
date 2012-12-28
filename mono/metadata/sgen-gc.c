@@ -228,6 +228,10 @@
 #include "utils/mach-support.h"
 #endif
 
+#ifdef PLATFORM_QNX
+extern int getpid(void);
+#endif
+
 #define OPDEF(a,b,c,d,e,f,g,h,i,j) \
 	a = i,
 

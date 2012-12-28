@@ -361,7 +361,7 @@ case "$host" in
 		libgc_threads=pthreads
 
 		# we'll build with sgen, but right now it CRASHES when collecting ...
-                with_sgen=yes
+                with_sgen=no
 
 		# isinf(3) requires -lm; see isinf check below
 		LDFLAGS="$LDFLAGS -lm"
