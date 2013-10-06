@@ -30,6 +30,10 @@
 #error "ARM_FPU_NONE is defined while one of ARM_FPU_VFP/ARM_FPU_VFP_HARD is defined"
 #endif
 
+#ifdef PLATFORM_QNX
+#include <sys/mman.h>
+#endif
+
 #if defined(MONO_ARCH_SOFT_FLOAT_FALLBACK)
 #define IS_SOFT_FLOAT (mono_arch_is_soft_float ())
 #define IS_VFP (!mono_arch_is_soft_float ())
@@ -1030,6 +1034,8 @@ mono_arch_flush_icache (guint8 *code, gint size)
 	sys_icache_invalidate (code, size);
 #elif __GNUC_PREREQ(4, 1)
 	__clear_cache (code, code + size);
+#elif defined(PLATFORM_QNX)
+        msync(code, size, MS_INVALIDATE_ICACHE);
 #elif defined(PLATFORM_ANDROID)
 	const int syscall = 0xf0002;
 	__asm __volatile (
