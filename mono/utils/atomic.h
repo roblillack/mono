@@ -90,7 +90,7 @@ static inline gint32 InterlockedExchangeAdd(volatile gint32 *val, gint32 add)
 	return __sync_fetch_and_add (val, add);
 }
 
-#if defined (TARGET_OSX)
+#if defined (TARGET_OSX) || defined (PLATFORM_QNX)
 #define BROKEN_64BIT_ATOMICS_INTRINSIC 1
 #endif
 

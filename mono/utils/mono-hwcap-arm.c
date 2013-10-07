@@ -47,7 +47,7 @@ mono_hwcap_arch_init (void)
 void
 mono_hwcap_arch_init (void)
 {
-#if defined(HAVE_SYS_AUXV_H) && !defined(PLATFORM_ANDROID)
+#if defined(HAVE_SYS_AUXV_H) && !defined(PLATFORM_ANDROID) && !defined(PLATFORM_QNX)
 	unsigned long hwcap;
 	unsigned long platform;
 
@@ -77,6 +77,22 @@ mono_hwcap_arch_init (void)
 
 		/* TODO: Find a way to detect v7s. */
 	}
+#elif defined(PLATFORM_QNX)
+        /* TODO: Find a way to do this correctly.
+         *
+         * As the QNX support is used for BB10 right now only, we can hardcode
+         * for the following CPUs right now:
+         *  - Qualcomm Snapdragon S4 Plus (MSM8960 T Pro) -- BlackBerry Z30
+         *  - Qualcomm Snapdragon S4 Plus (MSM8960) -- BlackBerry Z10, BlackBerry Q10
+         *  - TI OMAP 4470 -- BlackBerry Z10 (STL-100-1 only)
+         */
+        mono_hwcap_arm_is_v5 = TRUE;
+        mono_hwcap_arm_is_v6 = TRUE;
+        mono_hwcap_arm_is_v7 = TRUE;
+        mono_hwcap_arm_is_v7s = FALSE;
+        mono_hwcap_arm_has_vfp = TRUE;
+        mono_hwcap_arm_has_thumb = TRUE;
+        mono_hwcap_arm_has_thumb2 = FALSE;
 #elif defined(__APPLE__)
 	cpu_subtype_t sub_type;
 	size_t length = sizeof (sub_type);

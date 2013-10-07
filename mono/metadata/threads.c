@@ -22,6 +22,15 @@
 #include <pthread_np.h>
 #endif
 
+#if defined(PLATFORM_QNX)
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <sys/debug.h>
+#include <sys/procfs.h>
+#endif
+
 #include <mono/metadata/object.h>
 #include <mono/metadata/domain-internals.h>
 #include <mono/metadata/profiler-private.h>
@@ -918,7 +927,34 @@ mono_thread_get_stack_bounds (guint8 **staddr, size_t *stsize)
 	/* When running under emacs, sometimes staddr is not aligned to a page size */
 	*staddr = (guint8*)((gssize)*staddr & ~(mono_pagesize () - 1));
 	return;
+#elif defined(PLATFORM_QNX)
+	static guint8 *_base = 0;
+	static size_t _size = 0;
+	static pthread_t _thread;
+	pthread_t thread = pthread_self();
+        int fd = -1;
 
+	if (_base == 0 || _size == 0 || thread != _thread) {
+		struct _debug_thread_info thread_info;
+		memset(&thread_info, 0, sizeof(thread_info));
+		thread_info.tid = thread;
+
+		fd = open("/proc/self", O_RDONLY);
+		if (fd == -1) {
+			*staddr = NULL;
+                        return;
+		}
+
+		devctl(fd, DCMD_PROC_TIDSTATUS, &thread_info, sizeof(thread_info), 0);
+		close(fd);
+
+		_base = (guint8*) thread_info.stkbase;
+		_size = (size_t) thread_info.stksize;
+		_thread = thread;
+	}
+
+	*staddr = _base;
+	*stsize = _size;
 #elif defined(sun) || defined(__native_client__)
 	/* Solaris/Illumos, NaCl */
 	pthread_attr_t attr;
