@@ -21,6 +21,10 @@
 
 #endif
 
+#if defined(PLATFORM_QNX)
+#include <arm/smpxchg.h>
+#endif
+
 #include "config.h"
 #include <glib.h>
 
@@ -90,7 +94,7 @@ static inline gint32 InterlockedExchangeAdd(volatile gint32 *val, gint32 add)
 	return __sync_fetch_and_add (val, add);
 }
 
-#if defined (TARGET_OSX) || defined (PLATFORM_QNX)
+#if defined (TARGET_OSX)/* || defined (PLATFORM_QNX)*/
 #define BROKEN_64BIT_ATOMICS_INTRINSIC 1
 #endif
 
@@ -100,7 +104,11 @@ static inline gint32 InterlockedExchangeAdd(volatile gint32 *val, gint32 add)
 
 static inline gint64 InterlockedCompareExchange64(volatile gint64 *dest, gint64 exch, gint64 comp)
 {
+#if defined (PLATFORM_QNX)
+	return _smp_cmpxchg((volatile unsigned int *) dest, comp, exch);
+#else
 	return __sync_val_compare_and_swap (dest, comp, exch);
+#endif
 }
 
 #endif
